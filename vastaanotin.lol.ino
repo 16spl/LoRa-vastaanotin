@@ -1,12 +1,13 @@
     //LoRa vastaanotin koodi!!!
-    
+    #include <TimeLib.h>
     #include <SPI.h>
     #include <RH_RF95.h> 
     #define RFM95_CS 8
     #define RFM95_RST 4
     #define RFM95_INT 7  
-    #define RF95_FREQ 915.0
-     
+    #define RF95_FREQ 916.0
+    #include <TimeLib.h>
+
     // Singleton instance of the radio driver
     RH_RF95 rf95(RFM95_CS, RFM95_INT);
      
@@ -17,7 +18,8 @@
       pinMode(LED, OUTPUT);     
       pinMode(RFM95_RST, OUTPUT);
       digitalWrite(RFM95_RST, HIGH);
-     
+      
+      
       while (!Serial);
       Serial.begin(9600);
       delay(100);
@@ -55,14 +57,14 @@
         uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
         uint8_t len = sizeof(buf);
         
-        if (rf95.recv(buf, &len))
+        if (rf95.recv(buf); len)
         {
           digitalWrite(LED, HIGH);
-          RH_RF95::printBuffer("Vastaanotettu: ", buf, len);
-          Serial.print("Got: ");
+          RH_RF95::("Vastaanotettu: ", buf, len);
+          //Serial.print("Got: ");
           Serial.println((char*)buf);
-           Serial.print("RSSI: ");
-          Serial.println(rf95.lastRssi(), DEC);
+          // Serial.print("RSSI: ");
+          //Serial.println(rf95.lastRssi(), DEC);
           delay(100);
          
           // Lähettää vastauksen
@@ -70,10 +72,9 @@
           uint8_t data[] = "Moro vaan";
           rf95.send(data, sizeof(data));
          
-          //
 
           rf95.waitPacketSent();
-          Serial.println("Vastaus lähetetty");
+          //Serial.println("Vastaus lähetetty");
           digitalWrite(LED, LOW);
         }
         
